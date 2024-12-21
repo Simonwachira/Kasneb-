@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Floating Payment Form -->
+    <div class="form-container" id="payment-container">
+        <h2>Make a Payment</h2>
+        <form id="paymentForm" action="/payment" method="POST">
+            <input type="text" name="phoneNumber" placeholder="Phone Number" required>
+            <input type="number" name="amount" placeholder="Amount" required>
+            <button type="submit">Pay</button>
+        </form>
+    </div>
+</body>
+</html>

@@ -1,0 +1,89 @@
+/* General Styling */
+body {
+    font-family: Arial, sans-serif;
+    background: url('river.gif') no-repeat center center fixed;
+    background-size: cover;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+/* Floating Form Styling */
+.form-container {
+    background-color: rgba(241, 238, 49, 0.9);
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0px 4px 10px rgba(216, 122, 122, 0.527);
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+    position: absolute;
+}
+
+h2 {
+    margin-bottom: 20px;
+    color: #333;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+input {
+    padding: 10px;
+    border: 1px solid #b5a4a4;
+    border-radius: 5px;
+    font-size: 1em;
+}
+
+button {
+    padding: 10px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+.form-links {
+    margin-top: 10px;
+    font-size: 0.9em;
+    color: #666;
+}
+
+.form-links a {
+    color: #007BFF;
+    text-decoration: none;
+}
+
+.form-links a:hover {
+    text-decoration: underline;
+}
+
+/* Positioning the forms */
+#login-container {
+    top: 20%;
+    left: 50%;
+    transform: translate(-50%, -20%);
+}
+
+#signup-container {
+    top: 20%;
+    left: 50%;
+    transform: translate(-50%, -20%);
+    display: none;
+}
+
+#payment-container {
+    top: 20%;
+    left: 50%;
+    transform: translate(-50%, -20%);
+}
