@@ -17,6 +17,9 @@
             <div class="form-links">
                 <a id="show-signup">Don't have an account? Sign Up</a>
             </div>
+            <div class="form-links">
+            <a href="#" id="forgot-password">Forgot Password?</a>
+        </div>
         </form>
     </div>
 
@@ -100,6 +103,29 @@
                 alert(data.message || 'Signup failed!');
             }
         });
+        document.getElementById('forgot-password').addEventListener('click', () => {
+    const email = prompt('Please enter your email to reset your password:');
+    
+    if (email) {
+        fetch('/forgot-password', {  // Endpoint to handle the forgot password request
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Password reset email has been sent!');
+            } else {
+                alert(data.message || 'Error occurred!');
+            }
+        })
+        .catch(err => {
+            alert('Something went wrong. Please try again.');
+            console.error(err);
+        });
+    }
+});
     </script>
 </body>
 </html>
