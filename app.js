@@ -87,7 +87,6 @@ const userSchema = new mongoose.Schema({
 // Signup
 app.post('/signup', async (req, res) => {
   console.log("You are on sign up route now!");                     //add simo
-  //res.status(200).json({ message: "Route working" }); //add simo
   const { email, password,} = req.body;
   if (!email || !password) {return res.status(400).json({message: 'Email and password must be entered'})}
 
