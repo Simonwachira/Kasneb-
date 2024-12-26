@@ -11,6 +11,7 @@ const cors = require('cors');
 const authRoutes = require('./routes/auth');
 const paymentRoutes = require('./routes/payment');
 const esp32Routes = require('./routes/esp32');
+const Emailreset = require('./utils/email')
 const PORT = 3000;
 
 const app = express();
@@ -22,8 +23,9 @@ connectToDatabase(); //add simo
 // added simo Middleware for parsing JSON
 app.use(express.json()); // Use this for JSON payloads
 //add simo Use user routes, prefixing them with '/users'
-app.use('/users', userRoutes);
-app.use('/api/auth', require('./routes/auth')); //add simo
+app.use('/user', userRoutes);
+//app.use('/api/auth', require('./routes/auth')); //add simo
+app.use('/api/auth', authRoutes); //add simo
 app.use(bodyParser.urlencoded({ extended: true })); // Optional: For form data
 
 
@@ -61,7 +63,7 @@ app.post('/mpesa/callback', (req, res) => {
 // Initialize express app
 //
 app.use(cors());
-app.use(bodyParser.json());
+//app.use(bodyParser.json());
 
 // Routes
 app.use('/api/auth', authRoutes);
@@ -69,9 +71,9 @@ app.use('/api/payment', paymentRoutes);
 app.use('/api/esp32', esp32Routes);
 
 // MongoDB connection
-mongoose.connect(process.env.MONGO_URI) //{useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => console.log('MongoDB connected'))
-  .catch(err => console.log(err));
+//mongoose.connect(process.env.MONGO_URI) //{useNewUrlParser: true, useUnifiedTopology: true })
+ // .then(() => console.log('MongoDB connected'))
+ // .catch(err => console.log(err));
 
 // simo add User Schema
 const userSchema = new mongoose.Schema({
@@ -84,21 +86,26 @@ const userSchema = new mongoose.Schema({
 // simo add Routes
 // Signup
 app.post('/signup', async (req, res) => {
-  console.log("Signup route hit!");                     //add simo
+  console.log("You are on sign up route now!");                     //add simo
   //res.status(200).json({ message: "Route working" }); //add simo
-  const { email, password } = req.body;
+  const { email, password,} = req.body;
+  if (!email || !password) {return res.status(400).json({message: 'Email and password must be entered'})}
 
   try {
-      const existingUser = await user.findOne({ email });
+
+          const existingUser = await User.findOne({ email });
       if (existingUser) return res.status(400).send({ message: 'User already exists' });
 
       const hashedPassword = await bcrypt.hash(password, 10);
-      const user = new user({ email, password: hashedPassword });
-      await user.save();
+      const user = new User({ email, password: hashedPassword});
+      const savedUser = await user.save();
+      console.log('User saved:', savedUser);
 
-      res.status(201).send({ message: 'User created successfully' });
-  } catch (err) {
-      res.status(500).send({ message: 'Error creating user' });
+//changed send to .json
+      res.status(201).json({ message: 'User created successfully' });
+  } catch (error) {
+    console.error('Error as you tried to sign up:',error);
+      res.status(500).json({ message: 'Error creating user' });
   }
 });
 
@@ -108,7 +115,7 @@ app.post('/login', async (req, res) => {
   const { email, password } = req.body;
 
   try {
-      const user = await user.findOne({ email });
+      const user = await User.findOne({ email });
       if (!user) return res.status(400).send({ message: 'Invalid email or password' });
 
       const validPassword = await bcrypt.compare(password, user.password);

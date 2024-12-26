@@ -34,31 +34,35 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true,
         unique: true,  // Ensure no duplicates
-        match: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/, // Email validation regex
+       // match: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/, // Email validation regex
     },
     password: {
         type: String,
-        required: true,
+        required: false,
     },
+
+    
+
+
     verified: {
         type: Boolean,
-        default: false,  // Set default to false until email is verified
-    },
+       default: false,  // Set default to false until email is verified
+   },
     otp: {
         type: String,   // OTP for email verification
         default: null,
     },
     otpExpires: {
         type: Date,     // Expiry time for OTP
-        default: null,
+default: null,
     },
-    phoneNumber: {
-        type: String,
-        required: true,
-    },
-}, {
+   
+},{
     timestamps: true,  // Automatically adds createdAt and updatedAt
 });
+
+const User = mongoose.model('User',userSchema)
+module.exports = User; //add
 
 // Pre-save middleware to hash password
 userSchema.pre('save', async function (next) {
