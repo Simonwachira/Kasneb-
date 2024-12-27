@@ -18,9 +18,8 @@
                 <a id="show-signup">Don't have an account? Sign Up</a>
             </div>
             <div class="form-links">
-                <a href="#" id="forgot-password">Forgot Password?</a>
-            </div>
-
+            <a href="#" id="forgot-password">Forgot Password?</a>
+        </div>
         </form>
 
         
@@ -111,13 +110,11 @@
                 alert(data.message || 'Signup failed!');
             }
         });
-
-       // Handle Forgot Password Link
-document.getElementById('forgot-password').addEventListener('click', () => {
+        document.getElementById('forgot-password').addEventListener('click', () => {
     const email = prompt('Please enter your email to reset your password:');
     
     if (email) {
-        fetch('/forgot-password', {
+        fetch('/forgot-password', { 
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ email }),
@@ -136,8 +133,6 @@ document.getElementById('forgot-password').addEventListener('click', () => {
         });
     }
 });
-
-
     </script>
 </body>
 </html>
