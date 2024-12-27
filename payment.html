@@ -7,13 +7,34 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <!-- Floating Payment Form -->
+    
     <div class="form-container" id="payment-container">
         <h2>Make a Payment</h2>
         <form id="paymentForm" action="/payment" method="POST">
             <input type="text" name="phoneNumber" placeholder="Phone Number" required>
             <input type="number" name="amount" placeholder="Amount" required>
             <button type="submit">Pay</button>
+
+            <button id="logoutButton">Logout</button>
+    </div>
+
+    <script> 
+        document.getElementById('logoutButton').addEventListener('click', function() {
+            fetch('/logout', {
+                method: 'POST',
+                credentials: 'include' 
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.message === 'Logged out successfully') {
+                    localStorage.clear();  
+                    sessionStorage.clear(); 
+                    // Redirect to the login page
+                    window.location.href = '/login.html'; // Redirect to the login page
+                }
+            })
+            .catch(err => console.error('Logout failed:', err));
+        });</script>
         </form>
     </div>
 </body>

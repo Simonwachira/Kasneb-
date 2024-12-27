@@ -2,14 +2,11 @@ const axios = require('axios');
 const dotenv = require('dotenv');
 dotenv.config();
 
-// M-Pesa API credentials and URLs from your `.env` file
+// M-Pesa API credentials foe .env file
 const {
     MPESA_CONSUMER_KEY,
     MPESA_CONSUMER_SECRET,
     MPESA_SHORTCODE,
-    MPESA_LIPA_NA_MPESA_SHORTCODE,
-    MPESA_LIPA_NA_MPESA_SHORTCODE_SHORTPIN,
-    MPESA_LIPA_NA_MPESA_LIPA_NA_URL,
     MPESA_SANDBOX_URL,
 } = process.env;
 
@@ -17,6 +14,9 @@ const {
 const OAUTH_URL = `${MPESA_SANDBOX_URL}/oauth/v1/generate?grant_type=client_credentials`;
 
 // Generate an OAuth token for M-Pesa authentication
+/**
+ * @returns {Promise<string>} The access token.
+ */
 async function getMpesaToken() {
     const auth = `Basic ${Buffer.from(`${MPESA_CONSUMER_KEY}:${MPESA_CONSUMER_SECRET}`).toString('base64')}`;
     try {
@@ -28,18 +28,26 @@ async function getMpesaToken() {
         if (response.data && response.data.access_token) {
             return response.data.access_token;
         }
-        throw new Error('Failed to get M-Pesa token');
+
+        throw new Error('Failed to get M-Pesa tokens');
     } catch (error) {
-        console.error('Error getting M-Pesa token:', error);
+        console.error('Error getting M-Pesa tokens:', error);
         throw error;
     }
 }
 
-// Function to initiate C2B payment (Customer to Business Payment)
+/**
+ * Initiates a C2B payment request.
+ * @param {string} phoneNumber
+ * @param {number} amount 
+ * @returns {Promise<object>}
+ */
+
+// Function to initiate Customer to Business payment
 async function initiatePayment(phoneNumber, amount) {
     const token = await getMpesaToken();
 
-    // C2B Payment request URL (for Lipa na M-Pesa)
+    // Customer to Business Payment request url
     const paymentUrl = `${MPESA_SANDBOX_URL}/mpesa/c2b/v1/paymentrequest`;
 
     const headers = {
@@ -48,19 +56,16 @@ async function initiatePayment(phoneNumber, amount) {
     };
 
     const requestBody = {
-        Shortcode: MPESA_LIPA_NA_MPESA_SHORTCODE,
-        LipaNaMpesaOnlineShortcode: MPESA_LIPA_NA_MPESA_SHORTCODE,
-        LipaNaMpesaOnlineShortPin: MPESA_LIPA_NA_MPESA_SHORTCODE_SHORTPIN,
-        PhoneNumber: phoneNumber,  // Customer phone number
-        Amount: amount,  // Amount to be paid
-        AccountReference: "PaymentRef",  // Optional: Add custom reference
-        PhoneNumber: phoneNumber,  // Customer phone number (again)
-    };
+        Shortcode: MPESA_SHORTCODE,
+        PhoneNumber: phoneNumber,
+        Amount: amount,
+        AccountReference: 'PaymentRef',
+        shortpin: MPESA_PASSKEY    };
 
     try {
         const response = await axios.post(paymentUrl, requestBody, { headers });
         if (response.data && response.data.ResponseCode === '0') {
-            return response.data;  // Payment request was successful
+            return response.data;  
         } else {
             throw new Error(`Payment initiation failed: ${response.data.ResponseDescription}`);
         }
@@ -70,7 +75,12 @@ async function initiatePayment(phoneNumber, amount) {
     }
 }
 
-// Function to check the status of a payment (for example, after a callback from M-Pesa)
+// status of a payment
+/**
+  @param {string} transactionId 
+  @returns {Promise<object>}
+ */ 
+
 async function checkPaymentStatus(transactionId) {
     const token = await getMpesaToken();
 
@@ -82,7 +92,7 @@ async function checkPaymentStatus(transactionId) {
     };
 
     const requestBody = {
-        Shortcode: MPESA_LIPA_NA_MPESA_SHORTCODE,
+        Shortcode: MPESA_SHORTCODE,
         TransactionID: transactionId,
     };
 

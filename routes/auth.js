@@ -6,7 +6,7 @@ const bcrypt = require('bcrypt'); //bcrypt is installed
 const User = require('../models/user'); //path to User model
 const router = express.Router();
 
-// POST: Signup route
+// POST, Signup route
 router.post('/signup', async (req, res) => {
   try {
     console.log('Request body:', req.body); // incoming logs
@@ -19,7 +19,7 @@ router.post('/signup', async (req, res) => {
     }
 
     // Check if the user already exists
-    const existingUser = await User.findOne({  email }); // Adjust for your ORM or query
+    const existingUser = await User.findOne({  email }); 
     if (existingUser) {
       return res.status(400).json({ message: 'User already exists.' });
     }
@@ -27,7 +27,7 @@ router.post('/signup', async (req, res) => {
     // Hash the password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Save user to the database
+    // Save user to the Mongodatabase
     const newUser = new User({email,password:hashedPassword}) 
     await newUser.save(); 
 
@@ -36,7 +36,7 @@ router.post('/signup', async (req, res) => {
       userId: newUser.id,
     });
   } catch (error) {
-    console.error('Signup Error:', error.message); // Logs error to the console
+    console.error('Signup Error:', error.message); 
     res.status(500).json({ message: 'Internal Server Error.' });
   }
 });

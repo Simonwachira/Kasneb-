@@ -23,7 +23,7 @@ const transactionSchema = new mongoose.Schema({
     paymentStatus: {
         type: String,
         enum: ['Pending', 'Success', 'Failed'],
-        default: 'Pending',  // Default to 'Pending' when the transaction is created
+        default: 'Pending',  
     },
     mpesaResponseCode: {
         type: String,

@@ -4,25 +4,24 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 // AWS IoT Core configuration
-const iotEndpoint = process.env.AWS_IOT_ENDPOINT; // simo connected it fromReplace with your IoT endpoint from AWS
+const iotEndpoint = process.env.AWS_IOT_ENDPOINT; // IoT endpoint from AWS
 const topicPublish = process.env.AWS_IOT_PUBLISH_TOPIC; 
-const topicSubscribe = process.env.AWS_IOT_SUBSCRIBE_TOPIC;     // Replace with the topic that ESP32 subscribes to/publishes to
-const clientId = process.env.AWS_IOT_CLIENT_ID;  // Unique client ID for your device
-const thingName = process.env.AWS_IOT_THING_NAME; // Your Thing's name (configured in AWS IoT Core)
+const topicSubscribe = process.env.AWS_IOT_SUBSCRIBE_TOPIC; 
+const clientId = process.env.AWS_IOT_CLIENT_ID;  // Unique client ID for ESP32
+const thingName = process.env.THING_NAME; // Thing's name configured in AWS IoT Core
 
 // AWS IoT MQTT Client Configuration
 const mqttOptions = {
     host: iotEndpoint,
     port: process.env.AWS_IOT_PORT || 8883,  // Default MQTT port for TLS connection
-    protocol: 'mqtts',  // Use secure MQTT (TLS)
+    protocol: 'mqtts',  // secure MQTT TLS
     clientId: clientId,
     thingName: process.env.THINGNAME,
-    //username: 'your_username',  // Optional: If using authentication
-    //password: 'your_password',  // Optional: If using authentication
-    ca: fs.readFileSync('C:/Users/user/Desktop/UpdatedProject/certs/AmazonRootCA1.pem'),  // Root certificate
+        
+    ca: fs.readFileSync('./certs/AmazonRootCA1.pem'),  // Root certificate
     
-    cert: fs.readFileSync('C:/Users/user/Desktop/UpdatedProject/certs/certificate.pem.crt'),  // Device certificate
-    key: fs.readFileSync('C:/Users/user/Desktop/UpdatedProject/certs/private.pem.key'),  // Device private key
+    cert: fs.readFileSync('./certificate.pem.crt'),  // certificate
+    key: fs.readFileSync('./certs/private.pem.key'),  //  private key
 };
 
 // Initialize the MQTT client
@@ -43,10 +42,10 @@ mqttClient.on('connect', function () {
 // Handle incoming messages from ESP32 (MQTT subscribe)
 mqttClient.on('message', function (topic, message) {
     console.log(`Received message: ${message.toString()} on topic: ${topic}`);
-    // You can process the incoming message here, e.g., log data, trigger actions
+
 });
 
-// Publish a message to the topic (e.g., send data to ESP32)
+// Publish a message to the topic
 async function publishToESP32(data) {
     try {
         const payload = JSON.stringify(data);  // Convert the data to JSON
