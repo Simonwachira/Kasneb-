@@ -1,5 +1,4 @@
 const nodemailer = require('nodemailer');
-const sendEmail = require('./utils/email');
 const crypto = require('crypto'); //generate reset token
 require('dotenv').config();
 
@@ -11,6 +10,19 @@ const transporter = nodemailer.createTransport({
     pass: process.env.EMAIL_PASSWORD, // Sender email password
   },
 });
+
+// Helper Function to Send OTP Emails
+const sendOTPEmail = async (email, otp) => {
+  const mailOptions = {
+    from: process.env.EMAIL_USERNAME,
+    to: email,
+    subject: 'Your OTP for Account Verification',
+    text: `Your OTP is: ${otp}. It will expire in 10 minutes.`,
+  };
+
+  await transporter.sendMail(mailOptions);
+};
+
 const generateResetToken = () => {
   const buffer = crypto.randomBytes(32);
   return buffer.toString('hex');
